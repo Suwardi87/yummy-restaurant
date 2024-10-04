@@ -76,7 +76,7 @@
 
                     </tbody>
                 </table>
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-end mt-3">
                     {{ $images->links('pagination::bootstrap-5') }}
                 </div>
             </div>
@@ -114,7 +114,8 @@
                             Swal.fire({
                                 title: "Deleted!",
                                 text: data.message,
-                                icon: "success"
+                                icon: "success",
+                                showConfirmButton: false
                             });
                             window.location.reload();
                         }

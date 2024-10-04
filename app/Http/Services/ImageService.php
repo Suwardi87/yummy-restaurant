@@ -8,7 +8,7 @@ use App\Models\Galerry\Image;
 class ImageService
 {
     public function select(){
-        return Image::latest()->paginate(10);
+        return Image::latest()->paginate(1);
     }
 
     public function getByid(string $id)

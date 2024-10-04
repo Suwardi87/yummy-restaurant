@@ -48,15 +48,16 @@
                     </ul>
                 </div>
                 @endif
-                <form action="{{ route('panel.image.update', $image->uuid) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('panel.image.update', $image->uuid) }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
                     <!-- Input Name -->
                     <div class="mb-4">
                         <label for="name">Name</label>
-                        <input type="text" name="name" id="name" value="{{ $image->name }}" class="form-control @error('name') is-invalid @enderror"
-                            value="{{ old('name') }}">
+                        <input type="text" name="name" id="name" value="{{ $image->name }}"
+                            class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}">
                         @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -66,16 +67,18 @@
                     <div class="my-2">
                         <label for="description">Description</label>
                         <textarea name="description" id="description"
-                            class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
+                            class="form-control @error('description') is-invalid @enderror">{{ old('description', $image->description) }}</textarea>
                         @error('description')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
+
                     <!-- Input File -->
                     <div class="mb-3">
                         <label for="file">File Image</label>
-                        <input name="file" type="file" id="file" value="{{ $image->file }}" class="form-control @error('file') is-invalid @enderror">
+                        <input name="file" type="file" id="file" value="{{ $image->file }}"
+                            class="form-control @error('file') is-invalid @enderror">
                         @error('file')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -97,4 +100,3 @@
     </div>
 </div>
 @endsection
-

@@ -18,10 +18,8 @@ class Image extends Model
         'file'
     ];
 
-    protected static function boot()
+    protected static function booted()
     {
-        parent::boot();
-
         static::creating(function ($model) {
             $model->uuid = Str::uuid();
         });
