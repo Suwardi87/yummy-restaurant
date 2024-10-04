@@ -4,6 +4,7 @@ namespace App\Models\Galerry;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Image extends Model
 {
@@ -16,4 +17,15 @@ class Image extends Model
         'description',
         'file'
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->uuid = Str::uuid();
+        });
+    }
+
 }
+

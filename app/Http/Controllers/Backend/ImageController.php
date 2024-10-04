@@ -2,21 +2,34 @@
 
 namespace App\Http\Controllers\Backend;
 
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\Galerry\Image;
+use App\Http\Services\FileService;
+use App\Http\Services\ImageService;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ImageRequest;
 
 class ImageController extends Controller
 {
-    // public function __construct(private ImageService $ImageService) {}
     /**
-     * Display a listing of the resource.
+     * Membuat instance dari ImageService
+     *
+     * @var ImageService
      */
-    public function index()
+    public function __construct(
+        private FileService $fileService,
+        private ImageService $imageService
+    ) {}
+
+    /**
+     * Menampilkan list image
+     */
+    public function index(Request $request)
     {
-        $images = Image::latest()->paginate(10);
-        return view('backend.image.index', compact('images'));
+        // mengirimkan data ke view backend.image.index
+        return view('backend.image.index', [
+            'images' => $this->imageService->select(),
+        ]);
     }
 
     /**
@@ -30,36 +43,20 @@ class ImageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ImageRequest $request)
     {
-        $request->validate([
-            'name' => 'required|min:3|unique:images,name',  // Pastikan name unik
-            'description' => 'required|min:3',
-            'file' => 'required|image|mimetypes:image/jpeg,image/png,image/jpg,image/gif,image/svg|mimes:jpeg,png,jpg,gif,svg|max:5120'
-        ]);
-    
+        $data = $request->validated();
+
         try {
-            // Simpan file ke folder 'images' di storage public
-            $fileName = uniqid() . '.' . $request->file('file')->extension();
-            $filePath = $request->file('file')->storeAs('public',$fileName);
-    
-            // Menyimpan data ke database
-            $data = [
-                'uuid' => Str::uuid(),  // Buat UUID baru
-                'name' => $request->name,
-                'slug' => Str::slug($request->name),  // Membuat slug dari name
-                'description' => $request->description,
-                'file' => $filePath  // Simpan path file
-            ];
-    
-            Image::create($data);
-    
+            $data['file'] = $this->fileService->upload($data['file'], 'images');
+            $this->imageService->create($data);
             return redirect()->route('panel.image.index')->with('success', 'Image created successfully');
         } catch (\Throwable $error) {
-            return redirect()->back()->with('error', $error->getMessage());
+            $this->fileService->delete($data['file'], );
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data, pastikan data yang diinputkan benar dan tidak ada duplikasi nama. Error: ' . $error->getMessage());
         }
     }
-    
+
 
 
     /**
@@ -67,7 +64,10 @@ class ImageController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $image = $this->imageService->getByid($id);
+        return view('backend.image.show',[
+            'image' => $image
+        ]);
     }
 
     /**
@@ -75,15 +75,30 @@ class ImageController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $image = $this->imageService->getByid($id);
+        return view('backend.image.edit',[
+            'image' => $image
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ImageRequest $request, string $id)
     {
-        //
+        $data = $request->validated();
+        $getimage = $this->imageService->getByid($id);
+        try {
+            if ($request->hasFile('file')) {
+                $this->fileService->delete($getimage->file);
+                $data['file'] = $this->fileService->upload($request->file('file'), 'images');
+            }
+            $this->imageService->update($data, $id);
+            return redirect()->route('panel.image.index')->with('success', 'Image updated successfully');
+        } catch (\Throwable $error) {
+            $this->fileService->delete($data['file']);
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data, pastikan data yang diinputkan benar dan tidak ada duplikasi nama. Error: ' . $error->getMessage());
+        }
     }
 
     /**
@@ -91,6 +106,13 @@ class ImageController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $image = $this->imageService->getByid($id);
+            $this->fileService->delete($image->file);
+            $image->delete();
+            return response()->json(['message' => 'Image deleted successfully']);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'An error occurred while deleting the data. Error: ' . $th->getMessage()]);
+        }
     }
 }

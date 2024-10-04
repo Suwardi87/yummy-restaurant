@@ -1,6 +1,6 @@
 @extends('backend.template.main')
 
-@section('title', 'Create Image')
+@section('title', 'Update Image')
 
 @section('content')
 <div class="py-4">
@@ -26,7 +26,7 @@
     <div class="d-flex justify-content-between w-100 flex-wrap">
         <div class="mb-3 mb-lg-0">
             <h1 class="h4">@yield('title')</h1>
-            <p class="mb-0">Create Gambar Yummy restaurant </p>
+            <p class="mb-0">Update Gambar Yummy restaurant </p>
         </div>
         <div>
             <a href="{{ route('panel.image.index') }}" class="btn btn-outline-primary"><i
@@ -40,41 +40,49 @@
         <div class="card border-0 shadow components-section">
             <div class="card-body">
                 @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-                <form action="{{ route('panel.image.store') }}" method="POST" enctype="multipart/form-data">
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+                <form action="{{ route('panel.image.update', $image->uuid) }}" method="POST" enctype="multipart/form-data">
                     @csrf
+                    @method('PUT')
+
                     <!-- Input Name -->
                     <div class="mb-4">
                         <label for="name">Name</label>
-                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}">
+                        <input type="text" name="name" id="name" value="{{ $image->name }}" class="form-control @error('name') is-invalid @enderror"
+                            value="{{ old('name') }}">
                         @error('name')
-                        <span class="invalid-feedback">{{ $message }}</span>
+                        <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <!-- Input Description -->
                     <div class="my-2">
                         <label for="description">Description</label>
-                        <textarea name="description" class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
+                        <textarea name="description" id="description"
+                            class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
                         @error('description')
-                        <span class="invalid-feedback">{{ $message }}</span>
+                        <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <!-- Input File -->
                     <div class="mb-3">
                         <label for="file">File Image</label>
-                        <input name="file" type="file" class="form-control @error('file') is-invalid @enderror">
+                        <input name="file" type="file" id="file" value="{{ $image->file }}" class="form-control @error('file') is-invalid @enderror">
                         @error('file')
-                        <span class="invalid-feedback">{{ $message }}</span>
+                        <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+
+                        <div>
+                            <img src="{{ asset('storage/'.$image->file) }}" width="100px" alt="{{ $image->name }}">
+                        </div>
                     </div>
 
                     <!-- Submit Button -->
@@ -89,3 +97,4 @@
     </div>
 </div>
 @endsection
+
