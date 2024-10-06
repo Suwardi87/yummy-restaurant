@@ -8,6 +8,7 @@ use App\Http\Services\FileService;
 use App\Http\Services\ImageService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ImageRequest;
+use App\Http\Requests\MenuRequest;
 
 class ImageController extends Controller
 {
@@ -46,13 +47,12 @@ class ImageController extends Controller
     public function store(ImageRequest $request)
     {
         $data = $request->validated();
-
         try {
             $data['file'] = $this->fileService->upload($data['file'], 'images');
             $this->imageService->create($data);
             return redirect()->route('panel.image.index')->with('success', 'Image created successfully');
         } catch (\Throwable $error) {
-            $this->fileService->delete($data['file'], );
+            $this->fileService->delete($data['file'] );
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data, pastikan data yang diinputkan benar dan tidak ada duplikasi nama. Error: ' . $error->getMessage());
         }
     }

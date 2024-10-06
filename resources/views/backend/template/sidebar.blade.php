@@ -46,7 +46,7 @@
         <div class="multi-level collapse " role="list" id="master" aria-expanded="false">
             <ul class="flex-column nav">
                 <li class="nav-item ">
-                    <a class="nav-link" href="{{ asset('backend') }}/pages/tables/bootstrap-tables.html">
+                    <a class="nav-link" href="{{ route('panel.menu.index') }}">
                         <span class="sidebar-text">Menu</span>
                     </a>
                 </li>
