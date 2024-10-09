@@ -1,5 +1,5 @@
 @extends('backend.template.main')
-@section('title', 'Detail Image')
+@section('title', 'Detail Video')
 
 @section('content')
 
@@ -12,18 +12,18 @@
                 </a>
             </li>
             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a href="{{ route('panel.image.index') }}">Gallery
-                Image</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><a href="{{ route('panel.image.index') }}">@yield('title')</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><a href="{{ route('panel.video.index') }}">Gallery
+                Video</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Detail Video {{ $video->name }}</li>
         </ol>
     </nav>
     <div class="d-flex justify-content-between w-100 flex-wrap">
         <div class="mb-3 mb-lg-0">
             <h1 class="h4">@yield('title')</h1>
-            <p class="mb-0">Detail Gambar {{ $image->name }}</p>
+            <p class="mb-0">Detail Video {{ $video->name }}</p>
         </div>
         <div>
-            <a href="{{ route('panel.image.index') }}" class="btn btn-outline-gray-600 d-inline-flex align-items-center">
+            <a href="{{ route('panel.video.index') }}" class="btn btn-outline-gray-600 d-inline-flex align-items-center">
                <i class="fas fa-arrow-left me-2"></i>
                 back
             </a>
@@ -36,27 +36,19 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-4">
-                <img src="{{ asset('storage/'.$image->file) }}" class="img-fluid" alt="Gambar tidak ada"  target="_blank">
+                <iframe width="100%" height="150" src="{{ $video->video_link }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <div class="col-md-8">
                 <table class="table table-bordered">
                     <tr>
                         <th class="border-0">Name</th>
-                        <td>{{ $image->name }}</td>
+                        <td>{{ $video->name }}</td>
                     </tr>
                     <tr>
                         <th class="border-0">Slug</th>
-                        <td>{{ $image->slug }}</td>
-                    </tr>
-                    <tr>
-                        <th class="border-0">Description</th>
-                        <td>{{ $image->description }}</td>
+                        <td>{{ $video->slug }}</td>
                     </tr>
                 </table>
-                <div class="float-end mt-3">
-                    <a href="{{ route('panel.image.edit', $image->uuid) }}" class="btn btn-warning">Edit</a>
-                </div>
-                </div>
             </div>
         </div>
     </div>

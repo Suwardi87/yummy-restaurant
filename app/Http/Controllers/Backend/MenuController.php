@@ -22,7 +22,7 @@ class MenuController extends Controller
     public function index()
     {
         return view('backend.menu.index', [
-            'menus' => $this->menuService->select(1)
+            'menus' => $this->menuService->select(3)
         ]);
     }
 
@@ -85,14 +85,14 @@ class MenuController extends Controller
         $data = $request->validated();
         $getMenu = $this->menuService->getByid($id);
         try {
-            if ($request->hasFile('file')) {
-                $this->fileService->delete(path: $getMenu->photo);
+            if ($request->hasFile('photo')) {
+                $this->fileService->delete( $getMenu->photo);
                 $data['photo'] = $this->fileService->upload($request->file('photo'), 'images');
             }
             $this->menuService->update($data, $id);
-            return redirect()->route('panel.image.index')->with('success', 'Image updated successfully');
+            return redirect()->route('panel.menu.index')->with('success', 'Image updated successfully');
         } catch (\Exception $error) {
-            $this->fileService->delete($data['file']);
+            $this->fileService->delete($data['photo']);
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data, pastikan data yang diinputkan benar dan tidak ada duplikasi nama. Error: ' . $error->getMessage());
         }
     }
@@ -100,11 +100,11 @@ class MenuController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $uuid)
     {
         try {
-            $menu = $this->menuService->getByid($id);
-            $this->fileService->delete(path: $menu->photo);
+            $menu = $this->menuService->getByid($uuid);
+            $this->fileService->delete( $menu->photo);
             $menu->delete();
             return response()->json(['message' => 'Image deleted successfully']);
         } catch (\Throwable $th) {

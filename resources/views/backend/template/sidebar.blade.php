@@ -8,7 +8,7 @@
             <span class="mt-1 ms-1 sidebar-text">Yummy Panel</span>
         </a>
     </li>
-    <li class="nav-item  active ">
+    <li class="nav-item  {{ request()->routeIs('dashboard') ? 'active' : '' }} ">
         <a href="{{ route('dashboard') }}" class="nav-link">
             <span class="sidebar-icon">
                 <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
@@ -43,28 +43,20 @@
                 </svg>
             </span>
         </span>
-        <div class="multi-level collapse " role="list" id="master" aria-expanded="false">
+        <div class="multi-level collapse {{ request()->routeIs('panel.menu.*','panel.chef.*','panel.event.*') ? 'show' : '' }} " role="list" id="master" aria-expanded="false">
             <ul class="flex-column nav">
-                <li class="nav-item ">
+                <li class="nav-item {{ request()->routeIs('panel.menu.*') ? 'active' : '' }} ">
                     <a class="nav-link" href="{{ route('panel.menu.index') }}">
                         <span class="sidebar-text">Menu</span>
                     </a>
                 </li>
-            </ul>
-        </div>
-        <div class="multi-level collapse " role="list" id="master" aria-expanded="false">
-            <ul class="flex-column nav">
-                <li class="nav-item ">
-                    <a class="nav-link" href="{{ asset('backend') }}/pages/tables/bootstrap-tables.html">
+                <li class="nav-item  {{ request()->routeIs('panel.chef.*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('panel.chef.index') }}">
                         <span class="sidebar-text">Chef</span>
                     </a>
                 </li>
-            </ul>
-        </div>
-        <div class="multi-level collapse " role="list" id="master" aria-expanded="false">
-            <ul class="flex-column nav">
-                <li class="nav-item ">
-                    <a class="nav-link" href="{{ asset('backend') }}/pages/tables/bootstrap-tables.html">
+                <li class="nav-item {{ request()->routeIs('panel.event.*') ? 'active' : '' }}"">
+                    <a class="nav-link" href="{{ route('panel.event.index') }}">
                         <span class="sidebar-text">Events</span>
                     </a>
                 </li>
@@ -95,19 +87,15 @@
                 </svg>
             </span>
         </span>
-        <div class="multi-level collapse " role="list" id="gallery" aria-expanded="false">
+        <div class="multi-level collapse {{ request()->routeIs('panel.image.*','panel.video.*')   ? 'show' : '' }}" role="list" id="gallery" aria-expanded="false">
             <ul class="flex-column nav">
-                <li class="nav-item ">
+                <li class="nav-item {{ request()->routeIs('panel.image.*') ? 'active' : '' }}">
                     <a class="nav-link" href="{{ route('panel.image.index') }}">
                         <span class="sidebar-text">Foto</span>
                     </a>
                 </li>
-            </ul>
-        </div>
-        <div class="multi-level collapse " role="list" id="gallery" aria-expanded="false">
-            <ul class="flex-column nav">
-                <li class="nav-item ">
-                    <a class="nav-link" href="{{ asset('backend') }}/pages/tables/bootstrap-tables.html">
+                <li class="nav-item {{ request()->routeIs('panel.video.*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('panel.video.index') }}">
                         <span class="sidebar-text">Video</span>
                     </a>
                 </li>

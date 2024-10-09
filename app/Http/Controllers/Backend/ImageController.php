@@ -8,7 +8,6 @@ use App\Http\Services\FileService;
 use App\Http\Services\ImageService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ImageRequest;
-use App\Http\Requests\MenuRequest;
 
 class ImageController extends Controller
 {
