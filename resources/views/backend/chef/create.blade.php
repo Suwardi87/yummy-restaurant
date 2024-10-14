@@ -16,7 +16,7 @@
                     </svg>
                 </a>
             </li>
-            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('panel.dashboard') }}">Dashboard</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a href="{{ route('panel.chef.index') }}">List Chef</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a
                     href="{{ route('panel.chef.create') }}">@yield('title')</a></li>

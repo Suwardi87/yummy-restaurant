@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Backend;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Requests\ChefRequest;
 use App\Http\Services\ChefService;
 use App\Http\Services\FileService;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 
 class ChefController extends Controller
@@ -23,7 +22,7 @@ class ChefController extends Controller
     public function index()
     {
         return view('Backend.chef.index', [
-            'chefs' => $this->chefService->select(3)
+            'chefs' => $this->chefService->select()
         ]);
     }
 
@@ -32,6 +31,10 @@ class ChefController extends Controller
      */
     public function create()
     {
+        if (Auth::user()->role == 'owner') {
+            return redirect()->route('panel.chef.index')->with('error', 'You dont have permission to create chef');
+        }
+
         return view('Backend.chef.create');
     }
 
@@ -68,6 +71,10 @@ class ChefController extends Controller
      */
     public function edit(string $id)
     {
+        if (Auth::user()->role == 'owner') {
+            return redirect()->route('panel.chef.index')->with('error', 'You dont have permission to edit chef');
+        }
+
         $chef = $this->chefService->getByid($id);
 
         return view('Backend.chef.edit', compact('chef'));
@@ -78,6 +85,10 @@ class ChefController extends Controller
      */
     public function update(ChefRequest $request, string $id)
     {
+        if (Auth::user()->role == 'owner') {
+            return redirect()->route('panel.chef.index')->with('error', 'You dont have permission to update chef');
+        }
+
         $data = $request->validated();
         try {
             $chef = $this->chefService->getByid($id);
@@ -104,6 +115,10 @@ class ChefController extends Controller
      */
     public function destroy(string $uuid)
     {
+        if (Auth::user()->role == 'owner') {
+            return redirect()->route('panel.chef.index')->with('error', 'You dont have permission to delete chef');
+        }
+
         try {
             $chef = $this->chefService->getByid($uuid);
             $this->fileService->delete($chef->photo);

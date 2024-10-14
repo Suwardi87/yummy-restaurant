@@ -16,7 +16,7 @@
                         </svg>
                     </a>
                 </li>
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('panel.dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('panel.event.index') }}">Event</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Edit Event</li>
             </ol>
@@ -45,94 +45,96 @@
     {{-- form --}}
     <div class="card border-0 shadow mb-4">
         <div class="card-body">
-            <form action="{{ route('panel.event.update', $event->uuid) }}" method="post" enctype="multipart/form-data">
-                @method('PUT')
-                @csrf
+            @if (auth()->user()->hasRole('operator'))
+                <form action="{{ route('panel.event.update', $event->uuid) }}" method="post" enctype="multipart/form-data">
+                    @method('PUT')
+                    @csrf
 
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label for="name">Name</label>
-                            <input type="text" name="name" id="name"
-                                class="form-control @error('name') is-invalid @enderror"
-                                value="{{ old('name', $event->name) }}">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="name">Name</label>
+                                <input type="text" name="name" id="name"
+                                    class="form-control @error('name') is-invalid @enderror"
+                                    value="{{ old('name', $event->name) }}">
 
-                            @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
+                                @error('name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="status">Status</label>
+                                <select name="status" id="status" class="form-select @error('status') is-invalid @enderror">
+                                    <option value="active" {{ $event->status == 'active' ? 'selected' : '' }}>Active</option>
+                                    <option value="inactive" {{ $event->status == 'inactive' ? 'selected' : '' }}>Inactive
+                                    </option>
+                                </select>
+
+                                @error('status')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="price">Price</label>
+                                <input type="number" name="price" id="price" min="0"
+                                    class="form-control @error('name') is-invalid @enderror"
+                                    value="{{ old('price', $event->price) }}">
+
+                                @error('price')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label for="status">Status</label>
-                            <select name="status" id="status" class="form-select @error('status') is-invalid @enderror">
-                                <option value="active" {{ $event->status == 'active' ? 'selected' : '' }}>Active</option>
-                                <option value="inactive" {{ $event->status == 'inactive' ? 'selected' : '' }}>Inactive
-                                </option>
-                            </select>
+                    <div class="mb-3">
+                        <label for="name">Description</label>
+                        <textarea name="description" id="description" cols="5" rows="5"
+                            class="form-control  @error('description') is-invalid @enderror">{{ old('description', $event->description) }}</textarea>
 
-                            @error('status')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
+                        @error('description')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="photo">Image</label>
+                        <input type="file" name="photo" id="photo" accept="photo/*"
+                            class="form-control  @error('photo') is-invalid @enderror">
+
+                        @error('photo')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+
+                        <div class="mt-1">
+                            <img src="{{ asset('storage/' . $event->photo) }}" target="_blank">
                         </div>
                     </div>
 
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label for="price">Price</label>
-                            <input type="number" name="price" id="price" min="0"
-                                class="form-control @error('name') is-invalid @enderror"
-                                value="{{ old('price', $event->price) }}">
-
-                            @error('price')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
+                    <div class="float-end">
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="name">Description</label>
-                    <textarea name="description" id="description" cols="5" rows="5"
-                        class="form-control  @error('description') is-invalid @enderror">{{ old('description', $event->description) }}</textarea>
-
-
-
-                    @error('description')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
-                </div>
-
-
-                <div class="mb-3">
-                    <label for="photo">Image</label>
-                    <input type="file" name="photo" id="photo" accept="photo/*"
-                        class="form-control  @error('photo') is-invalid @enderror">
-
-                    @error('photo')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
-
-                    <div class="mt-1">
-                        <img src="{{ asset('storage/' . $event->photo) }}" target="_blank">
-                    </div>
-                </div>
-
-                <div class="float-end">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-            </form>
+                </form>
+            @else
+                <p>You don't have permission to edit this data.</p>
+            @endif
         </div>
     </div>
 @endsection
+

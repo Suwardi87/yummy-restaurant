@@ -8,6 +8,7 @@ use App\Http\Services\FileService;
 use App\Http\Services\ImageService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ImageRequest;
+use Illuminate\Support\Facades\Session;
 
 class ImageController extends Controller
 {
@@ -26,6 +27,9 @@ class ImageController extends Controller
      */
     public function index(Request $request)
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         // mengirimkan data ke view backend.image.index
         return view('backend.image.index', [
             'images' => $this->imageService->select(),
@@ -37,6 +41,9 @@ class ImageController extends Controller
      */
     public function create()
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         return view('backend.image.create');
     }
 
@@ -45,6 +52,9 @@ class ImageController extends Controller
      */
     public function store(ImageRequest $request)
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         $data = $request->validated();
         try {
             $data['file'] = $this->fileService->upload($data['file'], 'images');
@@ -63,6 +73,9 @@ class ImageController extends Controller
      */
     public function show(string $id)
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         $image = $this->imageService->getByid($id);
         return view('backend.image.show',[
             'image' => $image
@@ -74,6 +87,9 @@ class ImageController extends Controller
      */
     public function edit(string $id)
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         $image = $this->imageService->getByid($id);
         return view('backend.image.edit',[
             'image' => $image
@@ -85,6 +101,9 @@ class ImageController extends Controller
      */
     public function update(ImageRequest $request, string $id)
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         $data = $request->validated();
         $getimage = $this->imageService->getByid($id);
         try {
@@ -105,6 +124,9 @@ class ImageController extends Controller
      */
     public function destroy(string $id)
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         try {
             $image = $this->imageService->getByid($id);
             $this->fileService->delete($image->file);
@@ -115,3 +137,4 @@ class ImageController extends Controller
         }
     }
 }
+

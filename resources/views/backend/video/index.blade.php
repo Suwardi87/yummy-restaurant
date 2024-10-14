@@ -16,7 +16,7 @@
                         </svg>
                     </a>
                 </li>
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('panel.dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a
                         href="{{ route('panel.video.index') }}">@yield('title')</a></li>
             </ol>
@@ -26,13 +26,15 @@
                 <h1 class="h4">@yield('title')</h1>
                 <p class="mb-0">Daftar Video Yummy restaurant</p>
             </div>
-            <div>
-                <a href="{{ route('panel.video.create') }}"
-                    class="btn btn-outline-gray-600 d-inline-flex align-items-center">
-                    <i class="fas fa-plus me-2"></i>
-                    Create video
-                </a>
-            </div>
+           @if (session('role') == 'operator')
+                <div>
+                    <a href="{{ route('panel.video.create') }}"
+                        class="btn btn-outline-gray-600 d-inline-flex align-items-center">
+                        <i class="fas fa-plus me-2"></i>
+                        Create video
+                    </a>
+                </div>
+            @endif
         </div>
     </div>
 
@@ -61,11 +63,13 @@
                                 <td>
                                     <a href="{{ route('panel.video.show', $video->uuid) }}" class="btn btn-success"><i
                                             class="fas fa-eye"></i></a>
-                                    <a href="{{ route('panel.video.edit', $video->uuid) }}" class="btn btn-primary"><i
-                                            class="fas fa-edit"></i></a>
-                                   <button class="btn btn-danger" onclick="deleteVideo(this)" data-uuid="{{ $video->uuid }}">
-                                       <i class="fas fa-trash"></i>
-                                   </button>
+                                   @if (session('role') == 'operator')
+                                        <a href="{{ route('panel.video.edit', $video->uuid) }}" class="btn btn-primary"><i
+                                                class="fas fa-edit"></i></a>
+                                        <button class="btn btn-danger" onclick="deleteVideo(this)" data-uuid="{{ $video->uuid }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -126,5 +130,4 @@
             });
         }
     </script>
-
 

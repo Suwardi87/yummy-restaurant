@@ -16,7 +16,7 @@
                         </svg>
                     </a>
                 </li>
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('panel.dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Event</li>
             </ol>
         </nav>
@@ -26,15 +26,17 @@
                 <h1 class="h4">Event</h1>
                 <p class="mb-0">Daftar Event Yummy Restoran</p>
             </div>
-            <div>
-                <a href="{{ route('panel.event.create') }}" class="btn btn-warning d-inline-flex align-items-center">
-                    <i class="fas fa-plus me-1"></i> Create Event
-                </a>
-            </div>
+           @if (session('role') == 'operator')
+                <div>
+                    <a href="{{ route('panel.event.create') }}" class="btn btn-warning d-inline-flex align-items-center">
+                        <i class="fas fa-plus me-1"></i> Create Event
+                    </a>
+                </div>
+            @endif
         </div>
     </div>
 
-     @session('success')
+    @session('success')
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -72,72 +74,75 @@
                                             <i class="fas fa-eye"></i>
                                         </a>
 
-                                        <a href="{{ route('panel.event.edit', $item->uuid) }}"
-                                            class="btn btn-sm btn-primary">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
+                                       @if (session('role') == 'operator')
+                                            <a href="{{ route('panel.event.edit', $item->uuid) }}"
+                                                class="btn btn-sm btn-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
 
-                                        <button class="btn btn-danger" onclick="deleteEvent(this)" data-uuid="{{ $item->uuid }}">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                     </td>
-                                 </tr>
-                             @endforeach
+                                            <button class="btn btn-danger" onclick="deleteEvent(this)" data-uuid="{{ $item->uuid }}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        @endif
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
 
-                         </tbody>
-                     </table>
-                     <div class="d-flex justify-content-end mt-3">
-                         {{ $events->links('pagination::bootstrap-5') }}
-                     </div>
-                 </div>
-             </div>
-         </div>
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-end mt-3">
+                    {{ $events->links('pagination::bootstrap-5') }}
+                </div>
+            </div>
+        </div>
+    </div>
 
-     @endsection
+@endsection
 
-     @stack('js')
-     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@stack('js')
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-         <script>
-             const deleteEvent = (e) => {
-                 let uuid = e.getAttribute('data-uuid');
-                 Swal.fire({
-                     title: "Are you sure?",
-                     text: "You won't be able to revert this!",
-                     icon: "warning",
-                     showCancelButton: true,
-                     confirmButtonColor: "#3085d6",
-                     cancelButtonColor: "#d33",
-                     confirmButtonText: "Yes, delete it!"
-                 }).then((result) => {
-                     if (result.isConfirmed) {
-                         $.ajaxSetup({
-                             headers: {
-                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                             }
-                         });
-                         $.ajax({
-                             url: `{{ route('panel.event.destroy', '') }}/${uuid}`,
-                             type: 'DELETE',
-                             success: function(data) {
-                                 Swal.fire({
-                                     title: "Deleted!",
-                                     text: data.message,
-                                     icon: "success",
-                                     showConfirmButton: false
-                                 });
-                                 window.location.reload();
-                             }
-                         }).fail(function() {
-                             Swal.fire({
-                                 title: "Error!",
-                                 text: data.message,
-                                 icon: "error"
-                             });
-                         });
-                     }
-                 });
-             }
-         </script>
+    <script>
+        const deleteEvent = (e) => {
+            let uuid = e.getAttribute('data-uuid');
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        url: `{{ route('panel.event.destroy', '') }}/${uuid}`,
+                        type: 'DELETE',
+                        success: function(data) {
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: data.message,
+                                icon: "success",
+                                showConfirmButton: false
+                            });
+                            window.location.reload();
+                        }
+                    }).fail(function() {
+                        Swal.fire({
+                            title: "Error!",
+                            text: data.message,
+                            icon: "error"
+                        });
+                    });
+                }
+            });
+        }
+    </script>
 

@@ -16,7 +16,7 @@
                     </svg>
                 </a>
             </li>
-            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('panel.dashboard') }}">Dashboard</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a
                     href="{{ route('panel.image.index') }}">@yield('title')</a></li>
         </ol>
@@ -26,6 +26,7 @@
             <h1 class="h4">@yield('title')</h1>
             <p class="mb-0">List Menu Yummy restaurant</p>
         </div>
+        @if (session('role') == 'operator')
         <div>
             <a href="{{ route('panel.menu.create') }}"
                 class="btn btn-outline-gray-600 d-inline-flex align-items-center">
@@ -33,8 +34,15 @@
                 Create Menu
             </a>
         </div>
+        @endif
     </div>
 </div>
+@session('success')
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endsession
 
 {{-- table --}}
 <div class="card border-0 shadow mb-4">
@@ -61,9 +69,9 @@
                         <td>Rp. {{ number_format($menu->price, 0, ',', '.') }}</td>
                         <td>
                             @if ($menu->status == 'active')
-                                <span class="badge bg-success">Active</span>
+                            <span class="badge bg-success">Active</span>
                             @else
-                                <span class="badge bg-danger">Inactive</span>
+                            <span class="badge bg-danger">Inactive</span>
                             @endif
                         </td>
                         <td>
@@ -72,11 +80,13 @@
                         <td>
                             <a href="{{ route('panel.menu.show', $menu->uuid) }}" class="btn btn-success"><i
                                     class="fas fa-eye"></i></a>
+                            @if (session('role') == 'operator')
                             <a href="{{ route('panel.menu.edit', $menu->uuid) }}" class="btn btn-primary"><i
                                     class="fas fa-edit"></i></a>
                             <button class="btn btn-danger" onclick="deleteMenu(this)" data-uuid="{{ $menu->uuid }}">
                                 <i class="fas fa-trash"></i>
                             </button>
+                            @endif
                         </td>
                     </tr>
                     @empty
@@ -142,3 +152,4 @@
             });
         }
 </script>
+

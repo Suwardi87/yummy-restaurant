@@ -16,7 +16,7 @@
                     </svg>
                 </a>
             </li>
-            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('panel.dashboard') }}">Dashboard</a></li>
             <li class="breadcrumb-item"><a href="{{ route('panel.event.index') }}">Event</a></li>
             <li class="breadcrumb-item active" aria-current="page">Create Event</li>
         </ol>

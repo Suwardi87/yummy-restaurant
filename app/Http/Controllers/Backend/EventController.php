@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Http\Controllers\Backend;
+
 use App\Http\Services\FileService;
 use App\Http\Requests\EventRequest;
 use App\Http\Services\EventService;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Session;
 
 class EventController extends Controller
 {
@@ -20,6 +22,9 @@ class EventController extends Controller
      */
     public function index(): View
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         return view('backend.event.index', [
             'events' => $this->eventService->select(10)
         ]);
@@ -28,8 +33,11 @@ class EventController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): View
+    public function create()
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         return view('backend.event.create');
     }
 
@@ -38,6 +46,9 @@ class EventController extends Controller
      */
     public function store(EventRequest $request): RedirectResponse
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         $data = $request->validated();
         try {
             $data['photo'] = $this->fileService->upload($data['photo'], path: 'event');
@@ -55,6 +66,9 @@ class EventController extends Controller
      */
     public function show(string $uuid): View
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         return view('backend.event.show', [
             'event' => $this->eventService->selectFirstBy('uuid', $uuid)
         ]);
@@ -63,8 +77,11 @@ class EventController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $uuid): View
+    public function edit(string $uuid)
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         return view('backend.event.edit', [
             'event' => $this->eventService->selectFirstBy('uuid', $uuid)
         ]);
@@ -75,6 +92,9 @@ class EventController extends Controller
      */
     public function update(EventRequest $request, string $uuid)
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         $data = $request->validated();
 
         $getEvent = $this->eventService->selectFirstBy('uuid', $uuid);
@@ -109,6 +129,9 @@ class EventController extends Controller
      */
     public function destroy(string $uuid)
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         $getEvent = $this->eventService->selectFirstBy('uuid', $uuid);
 
         $this->fileService->delete(path: $getEvent->photo);
@@ -120,3 +143,4 @@ class EventController extends Controller
         ]);
     }
 }
+

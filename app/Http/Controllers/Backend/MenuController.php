@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Backend;
 
-use Illuminate\Http\Request;
 use App\Http\Services\FileService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MenuRequest;
 use App\Http\Services\CategoryService;
 use App\Http\Services\MenuService;
+use Illuminate\Support\Facades\Session;
 
 class MenuController extends Controller
 {
@@ -16,49 +16,46 @@ class MenuController extends Controller
         private CategoryService $categoryService,
         private FileService $fileService
     ) {}
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         return view('backend.menu.index', [
             'menus' => $this->menuService->select(3)
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         return view('backend.menu.create', [
             'categories' => $this->categoryService->option($coloumn = null, $value = null),
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(MenuRequest $request)
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         $data = $request->validated();
         try {
-            $data['photo'] = $this->fileService->upload($data['photo'], 'images');
+            $data['photo'] = $this->fileService->upload($data['photo'], path: 'menus');
 
             $this->menuService->create($data);
 
             return redirect()->route('panel.menu.index')->with('success', 'Menu has been created');
         } catch (\Exception $err) {
-            $this->fileService->delete($data['image']);
+            $this->fileService->delete($data['photo']);
 
             return redirect()->back()->with('error', $err->getMessage());
         }
     }
 
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $uuid)
     {
         return view('backend.menu.show', [
@@ -66,22 +63,22 @@ class MenuController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         return view('backend.menu.edit', [
             'menu' => $this->menuService->getByid($id),
             'categories' => $this->categoryService->option($coloumn = null, $value = null),
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(MenuRequest $request, string $id)
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         $data = $request->validated();
         $getMenu = $this->menuService->getByid($id);
         try {
@@ -97,11 +94,11 @@ class MenuController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $uuid)
     {
+        if (Session::get('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         try {
             $menu = $this->menuService->getByid($uuid);
             $this->fileService->delete( $menu->photo);
@@ -112,3 +109,4 @@ class MenuController extends Controller
         }
     }
 }
+

@@ -16,7 +16,7 @@
                     </svg>
                 </a>
             </li>
-            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('panel.dashboard') }}">Dashboard</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a href="{{ route('panel.video.index') }}">Gallery
                     Video</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a
@@ -37,38 +37,42 @@
 
 <div class="card">
     <div class="card-body">
-        <form action="{{ route('panel.video.update', $video->uuid) }}" method="POST">
-            @csrf
-            @method('PUT')
+        @if (auth()->user()->role == 'operator')
+            <form action="{{ route('panel.video.update', $video->uuid) }}" method="POST">
+                @csrf
+                @method('PUT')
 
-            <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-                    value="{{ old('name', $video->name) }}">
-                @error('name')
-                <span class="invalid-feedback">{{ $message }}</span>
-                @enderror
-            </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                        value="{{ old('name', $video->name) }}">
+                    @error('name')
+                    <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                </div>
 
-            <div class="mb-3">
-                <label for="video_link" class="form-label">Video Link</label>
-                <input type="url" name="video_link" class="form-control @error('video_link') is-invalid @enderror"
-                    value="{{ old('video_link', $video->video_link) }}">
-                @error('video_link')
-                <span class="invalid-feedback">{{ $message }}</span>
-                @enderror
-            </div>
+                <div class="mb-3">
+                    <label for="video_link" class="form-label">Video Link</label>
+                    <input type="url" name="video_link" class="form-control @error('video_link') is-invalid @enderror"
+                        value="{{ old('video_link', $video->video_link) }}">
+                    @error('video_link')
+                    <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                </div>
 
-            <div class="mt-3">
-                <iframe width="50%" height="30%" src="{{ $video->video_link }}" frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen></iframe>
-            </div>
+                <div class="mt-3">
+                    <iframe width="50%" height="30%" src="{{ $video->video_link }}" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
 
-            <div class="float-end">
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-        </form>
+                <div class="float-end">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        @else
+            <p class="text-center">You don't have permission to edit this data.</p>
+        @endif
     </div>
 </div>
 

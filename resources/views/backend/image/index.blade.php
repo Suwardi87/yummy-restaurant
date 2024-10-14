@@ -16,7 +16,7 @@
                         </svg>
                     </a>
                 </li>
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('panel.dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><a
                         href="{{ route('panel.image.index') }}">@yield('title')</a></li>
             </ol>
@@ -26,16 +26,23 @@
                 <h1 class="h4">@yield('title')</h1>
                 <p class="mb-0">Daftar Gambar Yummy restaurant</p>
             </div>
-            <div>
-                <a href="{{ route('panel.image.create') }}"
-                    class="btn btn-outline-gray-600 d-inline-flex align-items-center">
-                    <i class="fas fa-plus me-2"></i>
-                    Create Image
-                </a>
-            </div>
+           @if (session('role') == 'operator')
+                <div>
+                    <a href="{{ route('panel.image.create') }}"
+                        class="btn btn-outline-gray-600 d-inline-flex align-items-center">
+                        <i class="fas fa-plus me-2"></i>
+                        Create Image
+                    </a>
+                </div>
+            @endif
         </div>
     </div>
-
+    @session('success')
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endsession
     {{-- table --}}
     <div class="card border-0 shadow mb-4">
         <div class="card-body">
@@ -65,11 +72,13 @@
                                 <td>
                                     <a href="{{ route('panel.image.show', $image->uuid) }}" class="btn btn-success"><i
                                             class="fas fa-eye"></i></a>
-                                    <a href="{{ route('panel.image.edit', $image->uuid) }}" class="btn btn-primary"><i
-                                            class="fas fa-edit"></i></a>
-                                   <button class="btn btn-danger" onclick="deleteImage(this)" data-uuid="{{ $image->uuid }}">
-                                       <i class="fas fa-trash"></i>
-                                   </button>
+                                   @if (session('role') == 'operator')
+                                        <a href="{{ route('panel.image.edit', $image->uuid) }}" class="btn btn-primary"><i
+                                                class="fas fa-edit"></i></a>
+                                        <button class="btn btn-danger" onclick="deleteImage(this)" data-uuid="{{ $image->uuid }}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -130,5 +139,4 @@
             });
         }
     </script>
-
 

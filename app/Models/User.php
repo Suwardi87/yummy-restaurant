@@ -1,47 +1,45 @@
 <?php
-
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role', // pastikan ada field ini di database
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
     /**
-     * Get the attributes that should be cast.
+     * Check if the user has a specific role.
      *
-     * @return array<string, string>
+     * @param string $role
+     * @return bool
      */
-    protected function casts(): array
+    public function hasRole(string $roles): bool
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        // Logika tambahan untuk memeriksa peran
+        if (Session::get('role') === 'owner' && $roles === 'operator') {
+            return false; // Pemilik tidak bisa menjadi operator
+        }
+
+        return $this->role === $roles; // Periksa peran pengguna
     }
 }

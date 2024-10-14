@@ -3,12 +3,11 @@
 namespace App\Http\Services;
 
 use App\Models\Chef;
-use Illuminate\Support\Str;
 
 class ChefService
 {
     public function select(){
-        return Chef::latest()->paginate(3);
+        return Chef::latest()->paginate(6);
     }
 
     public function getByid(string $id)

@@ -16,7 +16,7 @@
                     </svg>
                 </a>
             </li>
-            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('panel.dashboard') }}">Dashboard</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a href="{{ route('panel.image.index') }}">Gallery
                     Image</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a
@@ -48,44 +48,54 @@
         </ul>
     </div>
 @endif
-                <form action="{{ route('panel.image.store') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    <!-- Input Name -->
-                    <div class="mb-4">
-                        <label for="name">Name</label>
-                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}">
-                        @error('name')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
 
-                    <!-- Input Description -->
-                    <div class="my-2">
-                        <label for="description">Description</label>
-                        <textarea name="description" class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
-                        @error('description')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
+                @if (session('user')->role == 'operator')
+                    <form action="{{ route('panel.image.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
 
-                    <!-- Input File -->
-                    <div class="mb-3">
-                        <label for="file">File Image</label>
-                        <input name="file" type="file" class="form-control @error('file') is-invalid @enderror">
-                        @error('file')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
+                        <!-- Input Name -->
+                        <div class="mb-4">
+                            <label for="name">Name</label>
+                            <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                                value="{{ old('name') }}">
+                            @error('name')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
 
-                    <!-- Submit Button -->
-                    <div class="float-end">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
+                        <!-- Input Description -->
+                        <div class="my-2">
+                            <label for="description">Description</label>
+                            <textarea name="description"
+                                class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
+                            @error('description')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
 
+                        <!-- Input File -->
+                        <div class="mb-3">
+                            <label for="file">File Image</label>
+                            <input name="file" type="file" class="form-control @error('file') is-invalid @enderror">
+                            @error('file')
+                            <span class="invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="float-end">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                @else
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Maaf!</strong> Anda tidak memiliki akses untuk tambah, ubah dan hapus data.
+                    </div>
+                @endif
 
             </div>
         </div>
     </div>
 </div>
 @endsection
+

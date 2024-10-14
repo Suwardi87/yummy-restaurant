@@ -16,7 +16,7 @@
                     </svg>
                 </a>
             </li>
-            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('panel.dashboard') }}">Dashboard</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a href="{{ route('panel.video.index') }}">Gallery
                     video</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a
@@ -29,14 +29,17 @@
             <p class="mb-0">Create Video Yummy restaurant </p>
         </div>
         <div>
+            @if (Auth::user()->role == 'operator')
             <a href="{{ route('panel.video.index') }}" class="btn btn-outline-primary"><i
                     class="fas fa-arrow-left me-1"></i> Back</a>
+            @endif
         </div>
     </div>
 </div>
 
 <div class="card border-0 shadow mb-4">
     <div class="card-body">
+        @if (Auth::user()->role == 'operator')
         <form action="{{ route('panel.video.store') }}" method="POST">
             @csrf
 
@@ -60,6 +63,11 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </form>
+        @else
+        <div class="alert alert-danger" role="alert">
+            <strong>You are not allowed to create or edit videos!</strong>
+        </div>
+        @endif
     </div>
 </div>
 @endsection

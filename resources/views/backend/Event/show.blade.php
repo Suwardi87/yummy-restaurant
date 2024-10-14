@@ -16,7 +16,7 @@
                         </svg>
                     </a>
                 </li>
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('panel.dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('panel.event.index') }}">event</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $event->name }}</li>
             </ol>
@@ -31,6 +31,10 @@
                 <a href="{{ route('panel.event.index') }}" class="btn btn-outline-gray-600 d-inline-flex align-items-center">
                     <i class="fas fa-arrow-left me-1"></i> Back
                 </a>
+                @if (session('role') == 'operator')
+                    <a href="{{ route('panel.event.edit', $event->uuid) }}" class="btn btn-warning ms-2"><i
+                            class="fas fa-edit"></i> Edit</a>
+                @endif
             </div>
         </div>
     </div>
@@ -64,7 +68,7 @@
                 <tr>
                     <th>Image</th>
                     <td width="60%">
-                        <img src="{{ asset('storage/'. $event->image) }}" class="img-fluid" width="20%" target="_blank">
+                        <img src="{{ asset('storage/'. $event->photo) }}" class="img-fluid" width="20%" target="_blank">
                     </td>
                 </tr>
                 <tr>
@@ -78,9 +82,12 @@
             </table>
 
             <div class="float-end mt-2">
-                <a href="{{ route('panel.event.edit', $event->uuid) }}" class="btn btn-warning"><i
-                        class="fas fa-edit"></i> Edit</a>
+                @if (session('role') == 'operator')
+                    <a href="{{ route('panel.event.download', $event->uuid) }}" class="btn btn-primary"><i
+                            class="fas fa-download"></i> Download</a>
+                @endif
             </div>
         </div>
     </div>
 @endsection
+

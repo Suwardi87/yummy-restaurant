@@ -28,9 +28,11 @@
                 <p class="mb-0">Tambah Menu Yummy Restoran</p>
             </div>
             <div>
-                <a href="{{ route('panel.menu.index') }}" class="btn btn-outline-gray-600 d-inline-flex align-items-center">
-                    <i class="fas fa-arrow-left me-1"></i> Back
-                </a>
+                @if (session('user')->role == 'operator')
+                    <a href="{{ route('panel.menu.index') }}" class="btn btn-outline-gray-600 d-inline-flex align-items-center">
+                        <i class="fas fa-arrow-left me-1"></i> Back
+                    </a>
+                @endif
             </div>
         </div>
     </div>
@@ -44,104 +46,109 @@
     {{-- form --}}
     <div class="card border-0 shadow mb-4">
         <div class="card-body">
-            <form action="{{ route('panel.menu.update', $menu->uuid) }}" method="POST"
-                enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="name">Name</label>
-                            <input type="text" name="name" id="name"                                 class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $menu->name) }}">
+            @if (session('user')->role == 'operator')
+                <form action="{{ route('panel.menu.update', $menu->uuid) }}" method="POST"
+                    enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="name">Name</label>
+                                <input type="text" name="name" id="name"                                 class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $menu->name) }}">
 
-                            @error('name')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
+                                @error('name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="category_id">Category</label>
+                                <select name="category_id" id="category_id" class="form-select @error('category_id') is-invalid @enderror" value="{{ old('category_id', $menu->category_id) }}">
+                                    <option value="">-- select category --</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->id }}" {{ $category->id == old('category_id', $menu->category_id) ? 'selected' : '' }}>{{ $category->title }}</option>
+                                    @endforeach
+                                </select>
+
+                                @error('category_id')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                         </div>
                     </div>
 
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="category_id">Category</label>
-                            <select name="category_id" id="category_id" class="form-select @error('category_id') is-invalid @enderror" value="{{ old('category_id', $menu->category_id) }}">
-                                <option value="">-- select category --</option>
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}" {{ $category->id == old('category_id', $menu->category_id) ? 'selected' : '' }}>{{ $category->title }}</option>
-                                @endforeach
-                            </select>
+                    <div class="mb-3">
+                        <label for="name">Description</label>
+                        <textarea name="description" id="description" cols="5" rows="5"
+                            class="form-control  @error('description') is-invalid @enderror">{{ old('description', $menu->description) }}</textarea>
 
-                            @error('category_id')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="name">Description</label>
-                    <textarea name="description" id="description" cols="5" rows="5"
-                        class="form-control  @error('description') is-invalid @enderror">{{ old('description', $menu->description) }}</textarea>
-
-                    @error('description')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="price">Price</label>
-                            <input type="number" name="price" id="price" min="0"
-                                class="form-control @error('name') is-invalid @enderror" value="{{ old('price', $menu->price) }}">
-
-                            @error('price')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
+                        @error('description')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
                     </div>
 
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="status">Status</label>
-                            <select name="status" id="status" class="form-select @error('status') is-invalid @enderror">
-                                <option value="">-- select status --</option>
-                                <option value="active" {{ old('status', $menu->status) == 'active' ? 'selected' : '' }}>Active</option>
-                                <option value="inactive" {{ old('status', $menu->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                            </select>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="price">Price</label>
+                                <input type="number" name="price" id="price" min="0"
+                                    class="form-control @error('name') is-invalid @enderror" value="{{ old('price', $menu->price) }}">
 
-                            @error('status')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
+                                @error('price')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="status">Status</label>
+                                <select name="status" id="status" class="form-select @error('status') is-invalid @enderror">
+                                    <option value="">-- select status --</option>
+                                    <option value="active" {{ old('status', $menu->status) == 'active' ? 'selected' : '' }}>Active</option>
+                                    <option value="inactive" {{ old('status', $menu->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                                </select>
+
+                                @error('status')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="mb-3">
-                    <label for="photo">Image</label>
-                    <input type="file" name="photo" id="photo" accept="photo/*"
-                        class="form-control  @error('photo') is-invalid @enderror">
-                    <img src="{{ asset('storage/' . $menu->photo) }}" class="img-fluid w-25 mt-2" alt="">
-                    @error('photo')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror
-                </div>
+                    <div class="mb-3">
+                        <label for="photo">Image</label>
+                        <input type="file" name="photo" id="photo" accept="photo/*"
+                            class="form-control  @error('photo') is-invalid @enderror">
+                        <img src="{{ asset('storage/' . $menu->photo) }}" class="img-fluid w-25 mt-2" alt="">
+                        @error('photo')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                        @enderror
+                    </div>
 
-                <div class="float-end">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Submit</button>
-                </div>
-            </form>
+                    <div class="float-end">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Submit</button>
+                    </div>
+                </form>
+            @else
+                <p>You don't have access to edit this menu</p>
+            @endif
         </div>
     </div>
 @endsection
+

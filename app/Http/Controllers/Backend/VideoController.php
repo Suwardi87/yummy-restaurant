@@ -5,18 +5,21 @@ namespace App\Http\Controllers\Backend;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\VideoRequest;
 use App\Http\Services\VideoService;
-use Illuminate\Http\Request;
 
 class VideoController extends Controller
 {
     public function __construct(
         private VideoService $videoService
     ){}
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        if (session('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         return view('backend.video.index',[
             'videos' => $this->videoService->select(3)
         ]);
@@ -27,6 +30,9 @@ class VideoController extends Controller
      */
     public function create()
     {
+        if (session('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         return view('backend.video.create');
     }
 
@@ -35,13 +41,16 @@ class VideoController extends Controller
      */
     public function store(VideoRequest $request)
     {
-       $video = $request->validated();
-       try {
-         $this->videoService->create($video);
-        return redirect()->route('panel.video.index')->with('success', 'Menu has been created');
-    } catch (\Exception $err) {
-        return redirect()->back()->with('error', $err->getMessage());
-    }
+        if (session('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
+        $video = $request->validated();
+        try {
+            $this->videoService->create($video);
+            return redirect()->route('panel.video.index')->with('success', 'Menu has been created');
+        } catch (\Exception $err) {
+            return redirect()->back()->with('error', $err->getMessage());
+        }
     }
 
     /**
@@ -49,6 +58,9 @@ class VideoController extends Controller
      */
     public function show(string $id)
     {
+        if (session('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         $video = $this->videoService->getByid($id);
         return view('backend.video.show',[
             'video' => $video
@@ -60,6 +72,9 @@ class VideoController extends Controller
      */
     public function edit(string $id)
     {
+        if (session('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         return view('backend.video.edit', [
             'video' => $this->videoService->getByid($id)
         ]);
@@ -70,6 +85,9 @@ class VideoController extends Controller
      */
     public function update(VideoRequest $request, string $id)
     {
+        if (session('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         $video = $request->validated();
         try {
             $this->videoService->update($video, $id);
@@ -84,6 +102,9 @@ class VideoController extends Controller
      */
     public function destroy(string $id)
     {
+        if (session('role') === 'owner') {
+            return redirect()->route('panel.transaction.index');
+        }
         try {
             $video = $this->videoService->getByid($id);
             $video->delete();
@@ -93,3 +114,4 @@ class VideoController extends Controller
         }
     }
 }
+

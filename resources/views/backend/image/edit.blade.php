@@ -16,7 +16,7 @@
                     </svg>
                 </a>
             </li>
-            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('panel.dashboard') }}">Dashboard</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a href="{{ route('panel.image.index') }}">Gallery
                     Image</a></li>
             <li class="breadcrumb-item active" aria-current="page"><a
@@ -90,7 +90,11 @@
 
                     <!-- Submit Button -->
                     <div class="float-end">
+                        @if (auth()->user()->hasRole('operator'))
                         <button type="submit" class="btn btn-primary">Submit</button>
+                        @else
+                        <button type="button" class="btn btn-primary" disabled>Submit</button>
+                        @endif
                     </div>
                 </form>
 
@@ -100,3 +104,4 @@
     </div>
 </div>
 @endsection
+
