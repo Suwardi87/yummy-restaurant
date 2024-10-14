@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MenuRequest;
 use App\Http\Services\CategoryService;
 use App\Http\Services\MenuService;
-use Illuminate\Support\Facades\Session;
 
 class MenuController extends Controller
 {
@@ -15,13 +14,13 @@ class MenuController extends Controller
         private MenuService $menuService,
         private CategoryService $categoryService,
         private FileService $fileService
-    ) {}
+    ) {
+        // Menggunakan middleware untuk kontrol akses berdasarkan role
+        $this->middleware('can:owner', ['except' => ['index', 'show']]);
+    }
 
     public function index()
     {
-        if (Session::get('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         return view('backend.menu.index', [
             'menus' => $this->menuService->select(3)
         ]);
@@ -29,9 +28,6 @@ class MenuController extends Controller
 
     public function create()
     {
-        if (Session::get('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         return view('backend.menu.create', [
             'categories' => $this->categoryService->option($coloumn = null, $value = null),
         ]);
@@ -39,9 +35,6 @@ class MenuController extends Controller
 
     public function store(MenuRequest $request)
     {
-        if (Session::get('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         $data = $request->validated();
         try {
             $data['photo'] = $this->fileService->upload($data['photo'], path: 'menus');
@@ -65,9 +58,6 @@ class MenuController extends Controller
 
     public function edit(string $id)
     {
-        if (Session::get('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         return view('backend.menu.edit', [
             'menu' => $this->menuService->getByid($id),
             'categories' => $this->categoryService->option($coloumn = null, $value = null),
@@ -76,9 +66,6 @@ class MenuController extends Controller
 
     public function update(MenuRequest $request, string $id)
     {
-        if (Session::get('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         $data = $request->validated();
         $getMenu = $this->menuService->getByid($id);
         try {
@@ -96,9 +83,6 @@ class MenuController extends Controller
 
     public function destroy(string $uuid)
     {
-        if (Session::get('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         try {
             $menu = $this->menuService->getByid($uuid);
             $this->fileService->delete( $menu->photo);

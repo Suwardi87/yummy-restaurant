@@ -2,19 +2,23 @@
 
 namespace App\Http\Controllers\Backend;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Http\Requests\ChefRequest;
 use App\Http\Services\ChefService;
 use App\Http\Services\FileService;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ChefController extends Controller
 {
     public function __construct(
         private ChefService $chefService,
-        private FileService $fileService,
-    ) {}
+        private FileService $fileService
+    ) {
+        // Menggunakan middleware untuk kontrol akses berdasarkan role
+        $this->middleware('can:owner', ['except' => ['index', 'show']]);
+    }
 
     /**
      * Display a listing of the resource.
@@ -31,10 +35,6 @@ class ChefController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->role == 'owner') {
-            return redirect()->route('panel.chef.index')->with('error', 'You dont have permission to create chef');
-        }
-
         return view('Backend.chef.create');
     }
 
@@ -45,14 +45,19 @@ class ChefController extends Controller
     {
         $data = $request->validated();
         try {
-            $data['photo'] = $this->fileService->upload($data['photo'], path: 'chef');
+            $data['photo'] = $this->fileService->upload($data['photo'], 'chef');
             $data['uuid'] = (string) Str::uuid();
             $this->chefService->create($data);
-            return redirect()->route('panel.chef.index')->with('success', 'Chef has been created');
-        } catch (\Exception $err) {
-            $this->fileService->delete($data['photo']);
 
-            return redirect()->back()->with('error', $err->getMessage());
+            return redirect()->route('panel.chef.index')->with('success', 'Chef has been created successfully.');
+        } catch (\Exception $err) {
+            if (isset($data['photo'])) {
+                $this->fileService->delete($data['photo']);
+            }
+
+            Log::error('Error creating chef: ' . $err->getMessage());
+
+            return redirect()->back()->with('error', 'An error occurred while creating the chef.');
         }
     }
 
@@ -71,10 +76,6 @@ class ChefController extends Controller
      */
     public function edit(string $id)
     {
-        if (Auth::user()->role == 'owner') {
-            return redirect()->route('panel.chef.index')->with('error', 'You dont have permission to edit chef');
-        }
-
         $chef = $this->chefService->getByid($id);
 
         return view('Backend.chef.edit', compact('chef'));
@@ -85,28 +86,28 @@ class ChefController extends Controller
      */
     public function update(ChefRequest $request, string $id)
     {
-        if (Auth::user()->role == 'owner') {
-            return redirect()->route('panel.chef.index')->with('error', 'You dont have permission to update chef');
-        }
-
         $data = $request->validated();
         try {
             $chef = $this->chefService->getByid($id);
+            // Jika ada foto baru yang diupload, hapus foto lama
             if ($request->hasFile('photo')) {
                 $this->fileService->delete($chef->photo);
-                $data['photo'] = $this->fileService->upload($request->file('photo'), path: 'chef');
+                $data['photo'] = $this->fileService->upload($request->file('photo'), 'chef');
             } else {
                 $data['photo'] = $chef->photo;
             }
+
             $this->chefService->update($data, $id);
 
-            return redirect()->route('panel.chef.index')->with('success', 'Chef has been updated');
+            return redirect()->route('panel.chef.index')->with('success', 'Chef has been updated successfully.');
         } catch (\Exception $err) {
-            if ($request->file('photo')) {
+            if (isset($data['photo'])) {
                 $this->fileService->delete($data['photo']);
             }
 
-            return redirect()->back()->with('error', $err->getMessage());
+            Log::error('Error updating chef: ' . $err->getMessage());
+
+            return redirect()->back()->with('error', 'An error occurred while updating the chef.');
         }
     }
 
@@ -115,17 +116,20 @@ class ChefController extends Controller
      */
     public function destroy(string $uuid)
     {
-        if (Auth::user()->role == 'owner') {
-            return redirect()->route('panel.chef.index')->with('error', 'You dont have permission to delete chef');
-        }
-
         try {
             $chef = $this->chefService->getByid($uuid);
+
+            // Hapus file foto terlebih dahulu
             $this->fileService->delete($chef->photo);
+
+            // Hapus chef dari database
             $chef->delete();
-            return response()->json(['message' => 'Image deleted successfully']);
+
+            return response()->json(['message' => 'Chef deleted successfully.']);
         } catch (\Exception $err) {
-            return redirect()->back()->with('error', $err->getMessage());
+            Log::error('Error deleting chef: ' . $err->getMessage());
+
+            return redirect()->back()->with('error', 'An error occurred while deleting the chef.');
         }
     }
 }

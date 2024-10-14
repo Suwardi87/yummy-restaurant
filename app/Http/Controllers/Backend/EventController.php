@@ -8,23 +8,21 @@ use App\Http\Services\EventService;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Session;
-
 class EventController extends Controller
 {
     public function __construct(
         private FileService $fileService,
         private EventService $eventService
-    ) {}
+    ) {
+        // Menggunakan middleware untuk kontrol akses berdasarkan role
+        $this->middleware('can:owner', ['except' => ['index', 'show']]);
+    }
 
     /**
      * Display a listing of the resource.
      */
     public function index(): View
     {
-        if (Session::get('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         return view('backend.event.index', [
             'events' => $this->eventService->select(10)
         ]);
@@ -35,9 +33,6 @@ class EventController extends Controller
      */
     public function create()
     {
-        if (Session::get('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         return view('backend.event.create');
     }
 
@@ -46,9 +41,6 @@ class EventController extends Controller
      */
     public function store(EventRequest $request): RedirectResponse
     {
-        if (Session::get('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         $data = $request->validated();
         try {
             $data['photo'] = $this->fileService->upload($data['photo'], path: 'event');
@@ -66,9 +58,6 @@ class EventController extends Controller
      */
     public function show(string $uuid): View
     {
-        if (Session::get('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         return view('backend.event.show', [
             'event' => $this->eventService->selectFirstBy('uuid', $uuid)
         ]);
@@ -79,9 +68,6 @@ class EventController extends Controller
      */
     public function edit(string $uuid)
     {
-        if (Session::get('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         return view('backend.event.edit', [
             'event' => $this->eventService->selectFirstBy('uuid', $uuid)
         ]);
@@ -92,9 +78,6 @@ class EventController extends Controller
      */
     public function update(EventRequest $request, string $uuid)
     {
-        if (Session::get('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         $data = $request->validated();
 
         $getEvent = $this->eventService->selectFirstBy('uuid', $uuid);
@@ -129,9 +112,6 @@ class EventController extends Controller
      */
     public function destroy(string $uuid)
     {
-        if (Session::get('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         $getEvent = $this->eventService->selectFirstBy('uuid', $uuid);
 
         $this->fileService->delete(path: $getEvent->photo);

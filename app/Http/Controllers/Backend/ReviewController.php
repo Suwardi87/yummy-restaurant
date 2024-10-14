@@ -13,7 +13,7 @@ class ReviewController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:operator', ['except' => ['index', 'show']]);
+        $this->middleware('role:owner', ['except' => ['index', 'show']]);
     }
 
     public function index(): View

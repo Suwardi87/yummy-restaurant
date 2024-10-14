@@ -10,16 +10,16 @@ class VideoController extends Controller
 {
     public function __construct(
         private VideoService $videoService
-    ){}
+    ){
+        // Menggunakan middleware untuk kontrol akses berdasarkan role
+        $this->middleware('can:owner', ['except' => ['index', 'show']]);
+    }
 
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        if (session('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         return view('backend.video.index',[
             'videos' => $this->videoService->select(3)
         ]);
@@ -30,9 +30,6 @@ class VideoController extends Controller
      */
     public function create()
     {
-        if (session('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         return view('backend.video.create');
     }
 
@@ -41,9 +38,6 @@ class VideoController extends Controller
      */
     public function store(VideoRequest $request)
     {
-        if (session('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         $video = $request->validated();
         try {
             $this->videoService->create($video);
@@ -58,9 +52,6 @@ class VideoController extends Controller
      */
     public function show(string $id)
     {
-        if (session('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         $video = $this->videoService->getByid($id);
         return view('backend.video.show',[
             'video' => $video
@@ -72,9 +63,6 @@ class VideoController extends Controller
      */
     public function edit(string $id)
     {
-        if (session('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         return view('backend.video.edit', [
             'video' => $this->videoService->getByid($id)
         ]);
@@ -85,9 +73,6 @@ class VideoController extends Controller
      */
     public function update(VideoRequest $request, string $id)
     {
-        if (session('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         $video = $request->validated();
         try {
             $this->videoService->update($video, $id);
@@ -102,9 +87,6 @@ class VideoController extends Controller
      */
     public function destroy(string $id)
     {
-        if (session('role') === 'owner') {
-            return redirect()->route('panel.transaction.index');
-        }
         try {
             $video = $this->videoService->getByid($id);
             $video->delete();

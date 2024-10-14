@@ -13,22 +13,17 @@ use Illuminate\Support\Facades\Session;
 
 class TransactionController extends Controller
 {
-    // public function __construct()
-    // {
-    //     // Middleware untuk melindungi rute tertentu
-    //     $this->middleware('role:operator', ['only' => ['show', 'update', 'destroy']]);
-    // }
+    public function __construct()
+    {
+        // Middleware untuk melindungi rute tertentu
+        $this->middleware('role:owner', ['except' => ['show', 'index']]);
+    }
 
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        // Redirect untuk owner
-        if (Session::get('role') === 'owner' ) {
-            return redirect()->route('panel.transaction.download');
-        }
-
         $transactions = Transaction::latest()->paginate(10);
 
         return view('backend.transaction.index', [

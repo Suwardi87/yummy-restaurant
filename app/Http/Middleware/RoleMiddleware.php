@@ -46,4 +46,6 @@ class RoleMiddleware
 
         return $user->role === $role; // Periksa peran pengguna
     }
+
+
 }
