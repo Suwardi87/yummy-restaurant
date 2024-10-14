@@ -32,7 +32,7 @@
             <a href="{{ route('panel.chef.create') }}"
                 class="btn btn-outline-gray-600 d-inline-flex align-items-center">
                 <i class="fas fa-plus me-2"></i>
-                Create Cheff
+                Create Chef
             </a>
         </div>
         @endif
