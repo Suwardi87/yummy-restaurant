@@ -7,16 +7,19 @@ use App\Http\Requests\EventRequest;
 use App\Http\Services\EventService;
 use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Services\MiddlewareService;
+
 class EventController extends Controller
 {
     public function __construct(
         private FileService $fileService,
-        private EventService $eventService
-    ) {
-        // Menggunakan middleware untuk kontrol akses berdasarkan role
-        $this->middleware('can:owner', ['except' => ['index', 'show']]);
-    }
+        private EventService $eventService,
+        private MiddlewareService $MiddlewareService
+        ){
+            $this->MiddlewareService->aksesRole();
+        }
 
     /**
      * Display a listing of the resource.

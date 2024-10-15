@@ -26,9 +26,9 @@
                 <h1 class="h4">Event</h1>
                 <p class="mb-0">Daftar Event Yummy Restoran</p>
             </div>
-           @if (session('role') == 'operator')
+           @if (auth()->user()->role == 'operator')
                 <div>
-                    <a href="{{ route('panel.event.create') }}" class="btn btn-warning d-inline-flex align-items-center">
+                    <a href="{{ route('panel.event.create') }}" class="btn btn-outline-gray-600 d-inline-flex align-items-center">
                         <i class="fas fa-plus me-1"></i> Create Event
                     </a>
                 </div>
@@ -64,7 +64,7 @@
                                 <td>{{ ($events->currentPage() - 1) * $events->perPage() + $loop->iteration }}</td>
                                 <td>{{ $item->name }}</td>
                                 <td>Rp. {{ number_format($item->price, 0, ',', '.') }}</td>
-                                <td>{{ Str::limit($item->description, 50, '...') }}</td>
+                                <td>{{ Str::limit($item->description, 20, '...') }}</td>
                                 <td width="20%">
                                     <img src="{{ asset('storage/' . $item->photo ) }}" target="_blank">
                                 </td>
@@ -74,7 +74,7 @@
                                             <i class="fas fa-eye"></i>
                                         </a>
 
-                                       @if (session('role') == 'operator')
+                                       @if (auth()->user()->role == 'operator')
                                             <a href="{{ route('panel.event.edit', $item->uuid) }}"
                                                 class="btn btn-sm btn-primary">
                                                 <i class="fas fa-edit"></i>

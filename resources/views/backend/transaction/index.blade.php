@@ -55,7 +55,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endsession
-        
+
     {{-- table --}}
     <div class="card border-0 shadow mb-4">
         <div class="card-body">
@@ -101,7 +101,7 @@
                                             <i class="fas fa-eye"></i>
                                         </a>
 
-                                        @if (session('role') == 'operator')
+                                        @if (auth()->user()->role == 'operator')
                                             <button type="button" class="btn btn-sm btn-primary" onclick="confirmModal(this)"
                                                 data-uuid="{{ $item->uuid }}">
                                                 <i class="fas fa-edit"></i>

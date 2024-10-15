@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
 use App\Models\Review;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\View\View;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use App\Http\Services\MiddlewareService;
 
 class ReviewController extends Controller
 {
-    public function __construct()
+    public function __construct(
+        private MiddlewareService $MiddlewareService
+    )
     {
-        $this->middleware('role:owner', ['except' => ['index', 'show']]);
+        $this->MiddlewareService->aksesRole();
     }
 
     public function index(): View

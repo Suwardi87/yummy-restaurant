@@ -3,11 +3,6 @@
 @section('title', 'Create Menu')
 
 @section('content')
-    @if (auth()->user()->hasRole('owner'))
-        <div class="alert alert-danger">
-            Anda tidak memiliki akses untuk menambah data menu. Silakan hubungi operator untuk menambah data.
-        </div>
-    @else
         <div class="py-4">
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
                 <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
@@ -57,7 +52,7 @@
                             <div class="mb-3">
                                 <label for="name">Name</label>
                                 <input type="text" name="name" id="name"
-                                    class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}">
+                                    class="form-control  @error('name') is-invalid @enderror" value="{{ old('name') }}">
 
                                 @error('name')
                                     <span class="invalid-feedback" role="alert">
@@ -103,7 +98,7 @@
                             <div class="mb-3">
                                 <label for="price">Price</label>
                                 <input type="number" name="price" id="price" min="0"
-                                    class="form-control @error('name') is-invalid @enderror" value="{{ old('price') }}">
+                                    class="form-control  @error('name') is-invalid @enderror" value="{{ old('price') }}">
 
                                 @error('price')
                                     <span class="invalid-feedback" role="alert">
@@ -133,7 +128,7 @@
 
                     <div class="mb-3">
                         <label for="photo">Image</label>
-                        <input type="file" name="photo" id="photo" accept="photo/*"
+                        <input type="file" name="photo" id="photo" accept="image/*"
                             class="form-control  @error('photo') is-invalid @enderror">
 
                         @error('photo')
@@ -149,6 +144,5 @@
                 </form>
             </div>
         </div>
-    @endif
 @endsection
 

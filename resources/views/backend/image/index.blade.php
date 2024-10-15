@@ -26,7 +26,7 @@
                 <h1 class="h4">@yield('title')</h1>
                 <p class="mb-0">Daftar Gambar Yummy restaurant</p>
             </div>
-           @if (session('role') == 'operator')
+           @if (auth()->user()->role == 'operator')
                 <div>
                     <a href="{{ route('panel.image.create') }}"
                         class="btn btn-outline-gray-600 d-inline-flex align-items-center">
@@ -70,15 +70,17 @@
                                     <img src="{{ asset('storage/' . $image->file) }}" alt="Gambar tidak ada" target="_blank">
                                 </td>
                                 <td>
+                                    <div class="btn-group">
                                     <a href="{{ route('panel.image.show', $image->uuid) }}" class="btn btn-success"><i
                                             class="fas fa-eye"></i></a>
-                                   @if (session('role') == 'operator')
+                                   @if (auth()->user()->role == 'operator')
                                         <a href="{{ route('panel.image.edit', $image->uuid) }}" class="btn btn-primary"><i
                                                 class="fas fa-edit"></i></a>
                                         <button class="btn btn-danger" onclick="deleteImage(this)" data-uuid="{{ $image->uuid }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     @endif
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

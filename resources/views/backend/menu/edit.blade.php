@@ -16,7 +16,7 @@
                         </svg>
                     </a>
                 </li>
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('panel.dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('panel.menu.index') }}">Menu</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Edit Menu</li>
             </ol>
@@ -28,11 +28,10 @@
                 <p class="mb-0">Tambah Menu Yummy Restoran</p>
             </div>
             <div>
-                @if (session('user')->role == 'operator')
                     <a href="{{ route('panel.menu.index') }}" class="btn btn-outline-gray-600 d-inline-flex align-items-center">
                         <i class="fas fa-arrow-left me-1"></i> Back
                     </a>
-                @endif
+
             </div>
         </div>
     </div>
@@ -46,7 +45,7 @@
     {{-- form --}}
     <div class="card border-0 shadow mb-4">
         <div class="card-body">
-            @if (session('user')->role == 'operator')
+
                 <form action="{{ route('panel.menu.update', $menu->uuid) }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
@@ -145,9 +144,6 @@
                         <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Submit</button>
                     </div>
                 </form>
-            @else
-                <p>You don't have access to edit this menu</p>
-            @endif
         </div>
     </div>
 @endsection

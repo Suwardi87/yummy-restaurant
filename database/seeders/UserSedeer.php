@@ -24,7 +24,7 @@ class UserSedeer extends Seeder
             'name' => 'operator',
             'email' => 'operator@gmail.com',
             'email_verified_at' => now(),
-            'password' => bcrypt('password123'),
+            'password' => bcrypt(value: 'password123'),
             'role' => 'operator'
         ]);
     }

@@ -62,7 +62,7 @@
                                         <a href="{{ route('panel.review.show', $item->uuid) }}" class="btn btn-sm btn-info">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        @if (session('role') == 'operator')
+                                        @if (auth()->user()->role == 'operator')
                                         <button class="btn btn-sm btn-danger" onclick="deleteReview(this)" data-uuid="{{ $item->uuid }}">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>

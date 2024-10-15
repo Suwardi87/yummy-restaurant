@@ -26,7 +26,7 @@
                 <h1 class="h4">@yield('title')</h1>
                 <p class="mb-0">Daftar Video Yummy restaurant</p>
             </div>
-           @if (session('role') == 'operator')
+           @if (auth()->user()->role == 'operator')
                 <div>
                     <a href="{{ route('panel.video.create') }}"
                         class="btn btn-outline-gray-600 d-inline-flex align-items-center">
@@ -61,15 +61,17 @@
                                     <iframe width="100%" height="150" src="{{ $video->video_link }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                 </td>
                                 <td>
+                                    <div class="btn-group">
                                     <a href="{{ route('panel.video.show', $video->uuid) }}" class="btn btn-success"><i
                                             class="fas fa-eye"></i></a>
-                                   @if (session('role') == 'operator')
+                                   @if (auth()->user()->role == 'operator')
                                         <a href="{{ route('panel.video.edit', $video->uuid) }}" class="btn btn-primary"><i
                                                 class="fas fa-edit"></i></a>
                                         <button class="btn btn-danger" onclick="deleteVideo(this)" data-uuid="{{ $video->uuid }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     @endif
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

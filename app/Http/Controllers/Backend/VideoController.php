@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Backend;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\VideoRequest;
 use App\Http\Services\VideoService;
+use App\Http\Services\MiddlewareService;
+use App\Http\Controllers\Controller;
 
 class VideoController extends Controller
 {
     public function __construct(
-        private VideoService $videoService
+        private VideoService $videoService,
+        private MiddlewareService $MiddlewareService
     ){
-        // Menggunakan middleware untuk kontrol akses berdasarkan role
-        $this->middleware('can:owner', ['except' => ['index', 'show']]);
+        $this->MiddlewareService->aksesRole();
     }
 
     /**

@@ -7,16 +7,17 @@ use Illuminate\Http\Request;
 use App\Mail\BookingMailConfirm;
 use App\Exports\TransactionExport;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Session;
+use App\Http\Services\MiddlewareService;
 
 class TransactionController extends Controller
 {
-    public function __construct()
-    {
-        // Middleware untuk melindungi rute tertentu
-        $this->middleware('role:owner', ['except' => ['show', 'index']]);
+    public function __construct( private MiddlewareService $MiddlewareService
+    ){
+        $this->MiddlewareService->aksesRole();
     }
 
     /**

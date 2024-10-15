@@ -18,7 +18,6 @@ Route::get('/', MainController::class);
 
 Route::post('booking', [BookingController::class, 'store'])->name('book.attempt');
 Route::post('review', [FrontReviewController::class, 'store'])->name('review.attempt');
-
 Route::prefix('panel')->middleware('auth')->group(function() {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('panel.dashboard');
 
@@ -29,14 +28,14 @@ Route::prefix('panel')->middleware('auth')->group(function() {
     Route::resource('chef', ChefController::class)->names('panel.chef');
 
     // Hanya untuk owner: hanya bisa melihat transaksi dan download
-    Route::middleware([RoleMiddleware::class . ':owner'])->group(function() {
-        Route::post('transaction/download', [TransactionController::class, 'download'])->name('panel.transaction.download');
-        Route::post('transaction', [TransactionController::class, 'download'])->name('panel.transaction.download');
+    Route::middleware([RoleMiddleware::class . ':owner,operator'])->group(function() {
         Route::get('transaction', [TransactionController::class, 'index'])->name('panel.transaction.index');
+        Route::post('transaction', [TransactionController::class, 'download'])->name('panel.transaction.download');
         Route::get('transaction/{transaction}', [TransactionController::class, 'show'])->name('panel.transaction.show');
     });
 
-    // Review bisa diakses oleh operator dan owner, sesuaikan jika ada role spesifik
+
+    // Review bisa diakses oleh operator dan owner
     Route::resource('review', ReviewController::class)->names('panel.review');
 });
 

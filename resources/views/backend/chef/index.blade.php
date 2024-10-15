@@ -27,24 +27,24 @@
             <h1 class="h4">@yield('title')</h1>
             <p class="mb-0">Daftar Gambar Chef Yummy restaurant</p>
         </div>
-       @if (session('role') == 'operator')
+        @if (auth()->user()->role == 'operator')
         <div>
             <a href="{{ route('panel.chef.create') }}"
                 class="btn btn-outline-gray-600 d-inline-flex align-items-center">
                 <i class="fas fa-plus me-2"></i>
-                Create Chefff
+                Create Chef
             </a>
         </div>
         @endif
     </div>
 </div>
 
-@session('success')
+@if (session('success'))
 <div class="alert alert-success alert-dismissible fade show" role="alert">
     {{ session('success') }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
-@endsession
+@endif
 
 {{-- table --}}
 <div class="card border-0 shadow mb-4">
@@ -73,17 +73,19 @@
                             <img src="{{ asset('storage/' . $chef->photo) }}" alt="Gambar tidak ada" target="_blank">
                         </td>
                         <td>
-                           @if (session('role') == 'operator')
+                            <div class="btn-group">
+                                <a href="{{ route('panel.chef.show', $chef->uuid) }}" class="btn btn-success"><i
+                                        class="fas fa-eye"></i></a>
+                            @if (auth()->user()->role == 'operator')
                             <a href="{{ route('panel.chef.edit', $chef->uuid) }}" class="btn btn-primary"><i
                                     class="fas fa-edit"></i></a>
                             @endif
-                            <a href="{{ route('panel.chef.show', $chef->uuid) }}" class="btn btn-success"><i
-                                    class="fas fa-eye"></i></a>
-                            @if (session('role') == 'operator')
+                            @if (auth()->user()->role == 'operator')
                             <button class="btn btn-danger" onclick="deleteChef(this)" data-uuid="{{ $chef->uuid }}">
                                 <i class="fas fa-trash"></i>
                             </button>
                             @endif
+                        </div>
                         </td>
                     </tr>
                     @endforeach

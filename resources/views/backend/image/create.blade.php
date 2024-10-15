@@ -49,7 +49,7 @@
     </div>
 @endif
 
-                @if (session('user')->role == 'operator')
+
                     <form action="{{ route('panel.image.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
@@ -87,12 +87,6 @@
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </form>
-                @else
-                    <div class="alert alert-danger" role="alert">
-                        <strong>Maaf!</strong> Anda tidak memiliki akses untuk tambah, ubah dan hapus data.
-                    </div>
-                @endif
-
             </div>
         </div>
     </div>

@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Backend;
 use Illuminate\Http\Request;
 use App\Models\Galerry\Image;
 use App\Http\Services\FileService;
+use App\Http\Requests\ImageRequest;
 use App\Http\Services\ImageService;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ImageRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Http\Services\MiddlewareService;
 
 class ImageController extends Controller
 {
@@ -19,8 +21,11 @@ class ImageController extends Controller
      */
     public function __construct(
         private FileService $fileService,
-        private ImageService $imageService
-    ) {}
+        private ImageService $imageService,
+        private MiddlewareService $MiddlewareService
+    ){
+            $this->MiddlewareService->aksesRole();
+    }
 
     /**
      * Menampilkan list image
@@ -137,4 +142,3 @@ class ImageController extends Controller
         }
     }
 }
-

@@ -26,7 +26,7 @@
             <h1 class="h4">@yield('title')</h1>
             <p class="mb-0">List Menu Yummy restaurant</p>
         </div>
-        @if (session('role') == 'operator')
+        @if (auth()->user()->role == 'operator')
         <div>
             <a href="{{ route('panel.menu.create') }}"
                 class="btn btn-outline-gray-600 d-inline-flex align-items-center">
@@ -78,15 +78,17 @@
                             <img src="{{ asset('storage/' . $menu->photo) }}" alt="Gambar tidak ada" target="_blank">
                         </td>
                         <td>
+                            <div class="btn-group">
                             <a href="{{ route('panel.menu.show', $menu->uuid) }}" class="btn btn-success"><i
                                     class="fas fa-eye"></i></a>
-                            @if (session('role') == 'operator')
+                            @if (auth()->user()->role == 'operator')
                             <a href="{{ route('panel.menu.edit', $menu->uuid) }}" class="btn btn-primary"><i
                                     class="fas fa-edit"></i></a>
                             <button class="btn btn-danger" onclick="deleteMenu(this)" data-uuid="{{ $menu->uuid }}">
                                 <i class="fas fa-trash"></i>
                             </button>
                             @endif
+                        </div>
                         </td>
                     </tr>
                     @empty

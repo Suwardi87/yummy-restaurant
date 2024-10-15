@@ -5,20 +5,20 @@ namespace App\Http\Controllers\Backend;
 use Illuminate\Support\Str;
 use App\Http\Requests\ChefRequest;
 use App\Http\Services\ChefService;
+use App\Http\Services\MiddlewareService;
 use App\Http\Services\FileService;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class ChefController extends Controller
 {
     public function __construct(
         private ChefService $chefService,
-        private FileService $fileService
-    ) {
-        // Menggunakan middleware untuk kontrol akses berdasarkan role
-        $this->middleware('can:owner', ['except' => ['index', 'show']]);
-    }
+        private FileService $fileService,
+        private MiddlewareService $MiddlewareService
+        ){
+            $this->MiddlewareService->aksesRole();
+        }
 
     /**
      * Display a listing of the resource.
@@ -132,5 +132,20 @@ class ChefController extends Controller
             return redirect()->back()->with('error', 'An error occurred while deleting the chef.');
         }
     }
-}
 
+    /**
+     * Download the specified resource.
+     */
+    public function download(string $id)
+    {
+        try {
+            $chef = $this->chefService->getByid($id);
+
+            return response()->download($chef->photo, $chef->name . '.jpg');
+        } catch (\Exception $err) {
+            Log::error('Error downloading chef: ' . $err->getMessage());
+
+            return redirect()->back()->with('error', 'An error occurred while downloading the chef.');
+        }
+    }
+}
