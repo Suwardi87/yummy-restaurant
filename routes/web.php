@@ -31,7 +31,9 @@ Route::prefix('panel')->middleware('auth')->group(function() {
     Route::middleware([RoleMiddleware::class . ':owner,operator'])->group(function() {
         Route::get('transaction', [TransactionController::class, 'index'])->name('panel.transaction.index');
         Route::post('transaction', [TransactionController::class, 'download'])->name('panel.transaction.download');
-        Route::get('transaction/{transaction}', [TransactionController::class, 'show'])->name('panel.transaction.show');
+        Route::resource('transaction', TransactionController::class)
+        ->except(['create', 'store', 'edit'])
+        ->names('panel.transaction');
     });
 
 

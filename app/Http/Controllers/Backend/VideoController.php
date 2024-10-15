@@ -12,7 +12,8 @@ class VideoController extends Controller
     public function __construct(
         private VideoService $videoService,
         private MiddlewareService $MiddlewareService
-    ){
+    )
+    {
         $this->MiddlewareService->aksesRole();
     }
 
@@ -97,4 +98,3 @@ class VideoController extends Controller
         }
     }
 }
-

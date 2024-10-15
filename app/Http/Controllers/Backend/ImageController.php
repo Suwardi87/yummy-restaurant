@@ -8,7 +8,6 @@ use App\Http\Services\FileService;
 use App\Http\Requests\ImageRequest;
 use App\Http\Services\ImageService;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Http\Services\MiddlewareService;
 

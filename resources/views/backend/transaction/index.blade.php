@@ -3,12 +3,6 @@
 @section('title', 'Transaction')
 
 @section('content')
-    {{-- @if (Auth::user()->role == 'owner')
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            <strong>Warning!</strong> You are an owner, you can only download and view transaction details.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif --}}
 
     <div class="py-4">
         <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
@@ -102,10 +96,11 @@
                                         </a>
 
                                         @if (auth()->user()->role == 'operator')
-                                            <button type="button" class="btn btn-sm btn-primary" onclick="confirmModal(this)"
-                                                data-uuid="{{ $item->uuid }}">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
+                                        <button type="button" class="btn btn-sm btn-primary" onclick="confirmModal(this)"
+                                        data-uuid="{{ $item->uuid }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+
 
                                             <button class="btn btn-sm btn-danger" onclick="deleteTransaction(this)"
                                                 data-uuid="{{ $item->uuid }}">
@@ -139,3 +134,62 @@
 
 @endsection
 
+
+@push('js')
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        const deleteTransaction = (e) => {
+            let uuid = e.getAttribute('data-uuid')
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: `/panel/transaction/${uuid}`,
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(data) {
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: data.message,
+                                icon: "success",
+                                timer: 2500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        },
+                        error: function(data) {
+                            Swal.fire({
+                                title: "Failed!",
+                                text: "Your data has not been deleted.",
+                                icon: "error"
+                            });
+
+                            console.log(data);
+                        }
+                    });
+                }
+            });
+        }
+
+        const confirmModal = (e) => {
+            let uuid = e.getAttribute('data-uuid')
+
+            // set action form
+            $('#confirmForm').attr('action', `/panel/transaction/${uuid}`)
+            $('#confirmModal').modal('show')
+        }
+    </script>
+@endpush

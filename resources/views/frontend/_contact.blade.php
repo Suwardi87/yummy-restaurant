@@ -62,75 +62,111 @@
                 <p><span>Share Your Experience</span> <span class="description-title">Write a Review</span></p>
             </div><!-- End Section Title -->
 
-            <div class="card shadow">
-                <div class="card-body">
-                    <form action="{{ route('review.attempt') }}" method="post">
-                        @csrf
+           <div class="row">
+            <div class="col-sm-8">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <form action="{{ route('review.attempt') }}" method="post">
+                            @csrf
 
-                        <div class="mb-3">
-                            <label for="code">Code Transaction</label>
-                            <input type="text" name="code" id="code"
-                                class="form-control @error('code')
-                   'is-invalid'
-               @enderror"
-                                value="{{ old('code') }}">
+                            <div class="mb-3">
+                                <label for="code">Code Transaction</label>
+                                <input type="text" name="code" id="code"
+                                    class="form-control @error('code')
+                       'is-invalid'
+                   @enderror"
+                                    value="{{ old('code') }}">
 
-                            @error('code')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
+                                @error('code')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="rate">Rating <i class="bi bi-star"></i></label>
-                            <select name="rate" id="rate" class="form-select">
-                                <option value="" hidden>-- choose review</option>
-                                <option value="1">1</option>
-                                <option value="2">
-                                    2
-                                </option>
-                                <option value="3">
-                                    3
-                                </option>
-                                <option value="4">
-                                    4
-                                </option>
-                                <option value="5">
-                                    5
-                                </option>
-                            </select>
+                            <div class="mb-3">
+                                <label for="rate">Rating <i class="bi bi-star"></i></label>
+                                <select name="rate" id="rate" class="form-select">
+                                    <option value="" hidden>-- choose review</option>
+                                    <option value="1">1</option>
+                                    <option value="2">
+                                        2
+                                    </option>
+                                    <option value="3">
+                                        3
+                                    </option>
+                                    <option value="4">
+                                        4
+                                    </option>
+                                    <option value="5">
+                                        5
+                                    </option>
+                                </select>
 
-                            @error('rate')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
+                                @error('rate')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="comment">Comment</label>
-                            <textarea name="comment" id="comment" cols="5" rows="5"
-                                class="form-control @error('code')
-                   'is-invalid'
-               @enderror">{{ old('comment') }}</textarea>
+                            <div class="mb-3">
+                                <label for="comment">Comment</label>
+                                <textarea name="comment" id="comment" cols="5" rows="5"
+                                    class="form-control @error('code')
+                       'is-invalid'
+                   @enderror">{{ old('comment') }}</textarea>
 
-                            @error('code')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
+                                @error('code')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
 
-                        <div class="float-end">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </div>
-                    </form>
+                            <div class="float-end">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
+            <div class="col-sm-4">
+                <div class="card shadow">
+                    <h3 class="m-sm-3">{{ $reviews->count() }} Review</h3>
+                    <div class="card-body">
+                        @forelse ($reviews as $review)
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <img src="https://ui-avatars.com/api/?name={{ $review->transaction->code }}"
+                                                alt="" width="50" height="50" class="rounded-circle">
+                                        </div>
+                                        <div class="ms-3">
+                                            <h6 class="mb-0">{{ $review->transaction->code }}</h6>
+                                            <small>{{ $review->created_at->format('d-m-Y H:i') }}</small>
+                                        </div>
+                                    </div>
 
-            
-
+                                    <p class="mb-0">{{ $review->comment }}</p>
+                                    <div class="mt-2">
+                                        @for ($i = 0; $i < $review->rate; $i++)
+                                            <i class="bi bi-star-fill text-warning me-1"></i>
+                                        @endfor
+                                        @for ($i = $review->rate; $i < 5; $i++)
+                                            <i class="bi bi-star text-muted me-1"></i>
+                                        @endfor
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <p class="text-center">Belum ada review.</p>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+           </div>
         </div>
 
     </div>
