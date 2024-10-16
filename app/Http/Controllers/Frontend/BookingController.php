@@ -28,8 +28,8 @@ class BookingController extends Controller
             }
 
             // send email
-            Mail::to($data->email)
-                ->cc('suwardyser87@gmail.com')
+            Mail::to($data['email'])
+                ->cc('suwardyser87@gmail.com') // Pastikan email ini sesuai dengan kebutuhan Anda
                 ->send(new BookingMailPending($data));
 
             Transaction::create($data);

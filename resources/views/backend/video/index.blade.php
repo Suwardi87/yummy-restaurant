@@ -52,11 +52,10 @@
                         </tr>
                     </thead>
                     <tbody>
-
                         @foreach ($videos as $video)
                             <tr>
                                 <td>{{ ($videos->currentPage() - 1) * $videos->perPage() + $loop->iteration }}</td>
-                                <td>{{ $video->name }}</td>
+                                <td>{{ Str::limit($video->name, 20, '...') }}</td>
                                 <td width="30%" height="30%">
                                     <iframe width="100%" height="150" src="{{ $video->video_link }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                 </td>

@@ -17,7 +17,8 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item"><a href="{{ route('panel.dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Review</li>
+                <li class="breadcrumb-item active" aria-current="page"><a
+                    href="{{ route('panel.review.index') }}">@yield('title')</a></li>
             </ol>
         </nav>
 

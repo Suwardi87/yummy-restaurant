@@ -24,7 +24,6 @@ class VideoRequest extends FormRequest
         return [
             'name' => 'required|min:3|unique:videos,name',
             'video_link' => 'required|url'
-
         ];
     }
 }

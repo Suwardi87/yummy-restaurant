@@ -9,7 +9,7 @@ class MiddlewareService
     public function aksesRole()
     {
         return function ($request, $next) {
-            if (Auth::user()->role === 'owner' && !in_array($request->routeIs('panel.menu.*'), ['index', 'show'])) {
+            if (Auth::user()->role === 'owner' && !in_array($request->routeIs('panel.*'), ['index', 'show', 'transactions.index', 'transactions.download'])) {
                 abort(403);
             }
 

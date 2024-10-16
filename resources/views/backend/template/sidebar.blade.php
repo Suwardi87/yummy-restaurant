@@ -102,7 +102,7 @@
             </ul>
         </div>
     </li>
-    <li class="nav-item ">
+    <li class="nav-item {{ request()->routeIs('panel.review.*') ? 'active' : '' }}">
         <a href="{{ route('panel.transaction.index') }}" class="nav-link">
             <span class="sidebar-icon">
                 <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"

@@ -8,16 +8,17 @@ use App\Http\Controllers\Backend\EventController;
 use App\Http\Controllers\Backend\ImageController;
 use App\Http\Controllers\Backend\VideoController;
 use App\Http\Controllers\Frontend\MainController;
-use App\Http\Controllers\Frontend\ReviewController as FrontReviewController;
 use App\Http\Controllers\Backend\ReviewController;
 use App\Http\Controllers\Frontend\BookingController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\TransactionController;
+use App\Http\Controllers\Frontend\ReviewController as FrontReviewController;
 
 Route::get('/', MainController::class);
 
 Route::post('booking', [BookingController::class, 'store'])->name('book.attempt');
 Route::post('review', [FrontReviewController::class, 'store'])->name('review.attempt');
+
 Route::prefix('panel')->middleware('auth')->group(function() {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('panel.dashboard');
 
@@ -27,17 +28,17 @@ Route::prefix('panel')->middleware('auth')->group(function() {
     Route::resource('video', VideoController::class)->names('panel.video');
     Route::resource('chef', ChefController::class)->names('panel.chef');
 
-    // Hanya untuk owner: hanya bisa melihat transaksi dan download
+    // Middleware untuk akses transaksi
     Route::middleware([RoleMiddleware::class . ':owner,operator'])->group(function() {
         Route::get('transaction', [TransactionController::class, 'index'])->name('panel.transaction.index');
         Route::post('transaction', [TransactionController::class, 'download'])->name('panel.transaction.download');
+    
+        // Batasi owner hanya ke method index dan download
         Route::resource('transaction', TransactionController::class)
-        ->except(['create', 'store', 'edit'])
-        ->names('panel.transaction');
+            ->names('panel.transaction')
+            ->only(['index', 'show']);  // Owner hanya bisa melihat daftar transaksi dan detail
     });
 
-
-    // Review bisa diakses oleh operator dan owner
     Route::resource('review', ReviewController::class)->names('panel.review');
 });
 

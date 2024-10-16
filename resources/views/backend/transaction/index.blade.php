@@ -18,7 +18,8 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item"><a href="{{ route('panel.dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Transaction</li>
+                <li class="breadcrumb-item active" aria-current="page"><a
+                    href="{{ route('panel.transaction.index') }}">@yield('title')</a></li>
             </ol>
         </nav>
 
@@ -133,7 +134,6 @@
     @include('backend.transaction._modal-confirm')
 
 @endsection
-
 
 @push('js')
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

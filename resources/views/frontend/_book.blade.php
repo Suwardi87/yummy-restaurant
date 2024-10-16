@@ -120,29 +120,7 @@
                                 </span>
                             @enderror
                         </div>
-
-                        <div class="mb-3">
-                            <label for="rate">Rate</label>
-                            <div class="input-group">
-                                <div class="input-group-text"><i class="fas fa-star"></i></div>
-                                <select name="rate" id="rate" class="form-select @error('rate') is-invalid @enderror">
-                                    <option value="">-- select rate --</option>
-                                    <option value="1"><i class="fas fa-star text-warning"></i></option>
-                                    <option value="2"><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i></option>
-                                    <option value="3"><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i></option>
-                                    <option value="4"><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i></option>
-                                    <option value="5"><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i><i class="fas fa-star text-warning"></i></option>
-                                </select>
-                            </div>
-
-                            @error('rate')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-
-                        <div class="text-center"></div>
+                        <div class="text-center mt-3"></div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </form>

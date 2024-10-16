@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -33,13 +34,13 @@ class User extends Authenticatable
      * @param string $role
      * @return bool
      */
-    public function hasRole(string $roles): bool
+    public function hasRole(string $role): bool
     {
         // Logika tambahan untuk memeriksa peran
-        if (Session::get('role') === 'owner' && $roles === 'operator') {
+        if (Session::get('role') === 'owner' && $role === 'operator') {
             return false; // Pemilik tidak bisa menjadi operator
         }
 
-        return $this->role === $roles; // Periksa peran pengguna
+        return $this->role === $role; // Periksa peran pengguna
     }
 }
